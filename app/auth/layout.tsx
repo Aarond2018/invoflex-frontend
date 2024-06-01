@@ -1,15 +1,16 @@
-import Header from "@/components/header/Header"
+import Header from "@/components/header/Header";
+import Footer from "@/components/footer/Footer";
 
 export default function AuthLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <div>
       <Header />
- 
-      {children}
+      <main className="w-full">{children}</main>
+      <Footer />
     </div>
-  )
+  );
 }

@@ -36,10 +36,10 @@ const config = {
           light: '#d1fadf'
         },
         'red': {
-          DEFAULT: 'D92D20',
+          DEFAULT: '#D92D20',
         },
         'yellow': {
-          light: 'FEDF89',
+          light: '#FEDF89',
           DEFAULT: '#F79009'
         },
         'gray': {
