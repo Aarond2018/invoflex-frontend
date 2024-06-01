@@ -103,8 +103,8 @@ export default function SignUpForm({}: Props) {
       </div>
 
       <div className="flex w-full items-center space-x-2 my-2">
-        <Checkbox id="terms" {...register("terms")} className="data-[state=checked]:bg-green border-gray" />
-        {/* <input type="checkbox" id="terms" {...register("terms")} /> */}
+        {/* <Checkbox id="terms" {...register("terms")} className="data-[state=checked]:bg-green border-gray" /> */}
+        <input type="checkbox" id="terms" {...register("terms")} />
         {/* <input
           type="text"
           id="email"
