@@ -8,5 +8,5 @@ export interface SignUpInputs {
   name: string;
   email: string;
   password: string;
-  terms: string;
+  terms: boolean;
 }

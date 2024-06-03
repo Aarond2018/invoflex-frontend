@@ -2,17 +2,15 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignUpSchema } from "@/zodSchemas/schema";
-import { Checkbox } from "@/components/ui/checkbox";
+// import { Checkbox } from "@/components/ui/checkbox";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { SignUpInputs } from "@/types/auth";
 
 type Props = {};
-
-//footer
 
 export default function SignUpForm({}: Props) {
   const [passwordType, setPasswordType] = useState<"text" | "password">(
@@ -23,7 +21,7 @@ export default function SignUpForm({}: Props) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignUpInputs>(/* { resolver: zodResolver(SignUpSchema) } */);
+  } = useForm<SignUpInputs>({ resolver: zodResolver(SignUpSchema) });
 
   const onSubmit: SubmitHandler<SignUpInputs> = (data) => {
     console.log(data);
@@ -104,18 +102,15 @@ export default function SignUpForm({}: Props) {
 
       <div className="flex w-full items-center space-x-2 my-2">
         {/* <Checkbox id="terms" {...register("terms")} className="data-[state=checked]:bg-green border-gray" /> */}
-        <input type="checkbox" id="terms" {...register("terms")} />
-        {/* <input
-          type="text"
-          id="email"
-          className="border rounded-md w-full p-2 text-sm focus:outline-none"
-          {...register("terms", {
-            required: "Email is required",
-          })}
-        /> */}
+        <input
+          type="checkbox"
+          id="terms"
+          {...register("terms")}
+          className="cursor-pointer accent-green"
+        />
         <label
           htmlFor="terms"
-          className="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          className="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
         >
           Accept terms and conditions
         </label>
