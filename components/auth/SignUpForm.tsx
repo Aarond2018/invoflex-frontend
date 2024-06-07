@@ -37,7 +37,7 @@ export default function SignUpForm({}: Props) {
         Let&apos;s get you started. Create an account to begin.
       </p>
       <div className="w-full flex flex-col gap-1 my-4">
-        <label htmlFor="email" className="text-sm font-semibold">
+        <label htmlFor="name" className="text-sm font-semibold">
           Name
         </label>
         <input

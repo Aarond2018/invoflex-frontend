@@ -11,7 +11,7 @@ import mailIcon from "@/assets/svgs/mail.svg";
 import Image from "next/image";
 
 type Props = {
-  setVerified: React.Dispatch<React.SetStateAction<boolean>>
+  setVerified: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function VerifyInput({ setVerified }: Props) {
@@ -21,12 +21,10 @@ export default function VerifyInput({ setVerified }: Props) {
     if (!otp || otp.length < 6) return;
 
     console.log(otp);
-    setVerified(true)
+    setVerified(true);
   };
 
-  const handleResendOtp = () => {
-    
-  }
+  const handleResendOtp = () => {};
 
   return (
     <div className="w-[95%] max-w-[32rem] px-4 py-4 bg-white rounded-md flex flex-col items-center text-center">
@@ -52,7 +50,12 @@ export default function VerifyInput({ setVerified }: Props) {
         </InputOTP>
       </div>
       <div className="w-full mt-4 flex">
-        <button onClick={handleResendOtp} className="border py-2 px-4 text-sm rounded">Resend OTP</button>
+        <button
+          onClick={handleResendOtp}
+          className="border py-2 px-4 text-sm rounded"
+        >
+          Resend OTP
+        </button>
       </div>
       <button
         onClick={handleVerifyToken}
