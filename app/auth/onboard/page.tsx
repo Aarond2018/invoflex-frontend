@@ -5,7 +5,6 @@ type Props = {};
 
 export default function Onboard({}: Props) {
   
-
   return (
     <section className="min-h-[80vh] flex justify-center">
       <OnboardForm />

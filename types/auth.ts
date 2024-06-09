@@ -10,3 +10,10 @@ export interface SignUpInputs {
   password: string;
   terms: boolean;
 }
+
+export interface OnboardInputs {
+  businessName: string;
+  address: string;
+  phone: string;
+  logo: File[];
+}

@@ -2,25 +2,41 @@
 
 import React, { useState } from "react";
 
-import Link from "next/link";
 import Image from "next/image";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { OnboardSchema } from "@/zodSchemas/schema";
+import { OnboardInputs } from "@/types/auth";
 
 type Props = {};
 
 export default function OnboardForm({}: Props) {
   const [value, setValue] = useState<string>();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<OnboardInputs>({ resolver: zodResolver(OnboardSchema) });
+
+  const logo = watch("logo");
+
+  const onSubmit: SubmitHandler<OnboardInputs> = (data) => {
+    console.log(data);
+  };
+
   return (
-    <div className="w-[95%] max-w-[64rem] px-4 py-4 bg-white rounded-md flex flex-col gap-4">
-      <div className="bg-[#F9FAFB] px-4 py-6 w-full">
+    <div className="w-[95%] max-w-[64rem] px-4 py-4 bg-white rounded-md flex flex-col md_sm:grid md_sm:grid-cols-[1fr,_2fr] gap-4">
+      <div className="bg-[#F9FAFB] px-4 py-6 w-full md_sm:h-min">
         <h3 className="text-xl font-semibold mb-4">Welcome to invoflex 👋</h3>
         <p className="text-gray text-sm">
           Fill up this form to get your account up and running.
         </p>
       </div>
-      <form className="">
+      <form className="" onSubmit={handleSubmit(onSubmit)}>
         <h1 className="text-xl font-semibold">Complete onboarding</h1>
         <p className="text-sm text-gray my-2">Enter some more information</p>
         <div className="w-full flex flex-col gap-1 my-4">
@@ -31,7 +47,13 @@ export default function OnboardForm({}: Props) {
             type="text"
             id="busName"
             className="border rounded-md w-full p-2 text-sm focus:outline-none"
+            {...register("businessName")}
           />
+          {errors.businessName?.message && (
+            <p className="text-xs italic text-red text-right">
+              {errors.businessName?.message}
+            </p>
+          )}
         </div>
         <div className="w-full flex flex-col gap-1 my-4">
           <label htmlFor="address" className="text-sm font-semibold">
@@ -41,7 +63,13 @@ export default function OnboardForm({}: Props) {
             type="text"
             id="address"
             className="border rounded-md w-full p-2 text-sm focus:outline-none"
+            {...register("address")}
           />
+          {errors.address?.message && (
+            <p className="text-xs italic text-red text-right">
+              {errors.address?.message}
+            </p>
+          )}
         </div>
         <div className="w-full flex flex-col gap-1 my-4">
           <label htmlFor="phone" className="text-sm font-semibold">
@@ -55,11 +83,41 @@ export default function OnboardForm({}: Props) {
           />
         </div>
         <div className="w-full flex flex-col gap-1 my-4">
-          <label htmlFor="logo" className="text-sm font-semibold">
-            Logo
-          </label>
-          <input type="file" id="logo" />
+          <p className="text-sm font-semibold">Logo</p>
+          <input
+            type="file"
+            id="logo"
+            className="hidden"
+            {...register("logo")}
+          />
+          {errors.logo?.message && (
+            <p className="text-xs italic text-red text-right">
+              {errors.logo?.message}
+            </p>
+          )}
+          <div className="flex gap-4">
+            <label
+              htmlFor="logo"
+              className="w-24 h-24 bg-[#F9FAFB] border border-dashed cursor-pointer flex justify-center items-center text-xs text-center"
+            >
+              Select Image
+            </label>
+            <div className="w-36 h-24 border">
+              {logo && logo.length > 0 && (
+                <Image
+                  src={URL.createObjectURL(logo[0])}
+                  alt="logo"
+                  width={200}
+                  height={120}
+                  className="w-full object-cover"
+                />
+              )}
+            </div>
+          </div>
         </div>
+        <button className="p-2 w-full bg-dark text-white font-medium my-8 rounded-md">
+          Save & Continue
+        </button>
       </form>
     </div>
   );
