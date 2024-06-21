@@ -17,3 +17,7 @@ export interface OnboardInputs {
   phone: string;
   logo: File[];
 }
+
+export interface SignUpResponse {
+  
+}

@@ -9,12 +9,18 @@ import { SignUpSchema } from "@/zodSchemas/schema";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { SignUpInputs } from "@/types/auth";
+import { useReactMutation } from "@/services/apiHelpers";
 
 type Props = {};
 
 export default function SignUpForm({}: Props) {
   const [passwordType, setPasswordType] = useState<"text" | "password">(
     "password"
+  );
+
+  const { mutate, isError, isPending, isSuccess } = useReactMutation(
+    "/auth/signup",
+    "post"
   );
 
   const {
@@ -24,7 +30,21 @@ export default function SignUpForm({}: Props) {
   } = useForm<SignUpInputs>({ resolver: zodResolver(SignUpSchema) });
 
   const onSubmit: SubmitHandler<SignUpInputs> = (data) => {
-    console.log(data);
+    // console.log(data);
+
+    mutate(
+      {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      },
+      {
+        onSuccess(data) {
+          console.log("data");
+          console.log(data.data);
+        },
+      }
+    );
   };
 
   return (

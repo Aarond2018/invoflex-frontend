@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import RQProvider from "@/components/QueryClientProvider/RQProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +17,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} text-dark bg-[#F9FAFB]`}>{children}</body>
+      <RQProvider>
+        <body className={`${inter.className} text-dark bg-[#F9FAFB]`}>
+          {children}
+        </body>
+      </RQProvider>
     </html>
   );
 }
