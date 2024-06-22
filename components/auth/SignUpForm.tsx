@@ -8,8 +8,11 @@ import { SignUpSchema } from "@/zodSchemas/schema";
 // import { Checkbox } from "@/components/ui/checkbox";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
-import { SignUpInputs } from "@/types/auth";
+import { SignUpInputs, SignUpResponseData } from "@/types/auth";
 import { useReactMutation } from "@/services/apiHelpers";
+import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from 'next/navigation'
+import { setAuthCookie } from "@/lib/utils";
 
 type Props = {};
 
@@ -18,10 +21,13 @@ export default function SignUpForm({}: Props) {
     "password"
   );
 
-  const { mutate, isError, isPending, isSuccess } = useReactMutation(
+  const { mutate, isPending } = useReactMutation<SignUpResponseData, SignUpInputs>(
     "/auth/signup",
     "post"
   );
+
+  const router = useRouter()
+  const { toast } = useToast()
 
   const {
     register,
@@ -30,8 +36,6 @@ export default function SignUpForm({}: Props) {
   } = useForm<SignUpInputs>({ resolver: zodResolver(SignUpSchema) });
 
   const onSubmit: SubmitHandler<SignUpInputs> = (data) => {
-    // console.log(data);
-
     mutate(
       {
         name: data.name,
@@ -40,9 +44,22 @@ export default function SignUpForm({}: Props) {
       },
       {
         onSuccess(data) {
-          console.log("data");
           console.log(data.data);
+          setAuthCookie(data.data.token, data.data.data.email)
+          toast({
+            variant: "success",
+            title: "Success!",
+            description: "Account created successfully!",
+          })
+          router.replace("/auth/verify-email")
         },
+        onError(error) {
+          toast({
+            variant: "destructive",
+            title: "Error!",
+            description: error?.response?.data.message || error?.message || "Something went wrong!",
+          })
+        }
       }
     );
   };
@@ -140,8 +157,8 @@ export default function SignUpForm({}: Props) {
           </p>
         )}
       </div>
-      <button className="p-2 w-full bg-dark text-white font-medium my-4 rounded-md">
-        Sign up
+      <button disabled={!!isPending} className="p-2 w-full bg-dark text-white font-medium my-4 rounded-md disabled:bg-gray disabled:cursor-not-allowed">
+       {!!isPending ? "Signing up" : "Sign up"}
       </button>
       <p className="text-sm my-2">
         Do you have an account?{" "}

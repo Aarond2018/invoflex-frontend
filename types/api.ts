@@ -9,6 +9,6 @@ export interface ApiResponseSuccess<T> {
 export interface ApiResponseError {
   status: string;
   message: string;
-  error: unknown;
+  error: any;
   stack: any;
 }

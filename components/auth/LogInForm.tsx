@@ -7,7 +7,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginSchema } from "@/zodSchemas/schema";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
-import { LoginInputs } from "@/types/auth";
+import { LoginInputs, LogInResponseData } from "@/types/auth";
+import { useReactMutation } from "@/services/apiHelpers";
+import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from 'next/navigation'
+import { setCookie } from 'cookies-next';
+import { setAuthCookie } from "@/lib/utils";
 
 type Props = {};
 
@@ -15,6 +20,19 @@ export default function LogInForm({}: Props) {
   const [passwordType, setPasswordType] = useState<"text" | "password">(
     "password"
   );
+
+  const { mutate, isPending } = useReactMutation<LogInResponseData, LoginInputs>(
+    "/auth/signin",
+    "post"
+  );
+
+  const { mutate:sendOtp } = useReactMutation(
+    "/auth/sendOtp",
+    "post"
+  );
+
+  const router = useRouter()
+  const { toast } = useToast()
 
   const {
     register,
@@ -24,6 +42,47 @@ export default function LogInForm({}: Props) {
 
   const onSubmit: SubmitHandler<LoginInputs> = (data) => {
     console.log(data);
+
+    mutate(
+      {
+        email: data.email,
+        password: data.password,
+      },
+      {
+        onSuccess(data) {
+          console.log(data.data);
+          setAuthCookie(data.data.token, data.data.data.email)
+
+          if(!data.data.data.isVerified) {
+            sendOtp({})
+
+            toast({
+              variant: "caution",
+              title: "Oh oh!",
+              description: "Verify your account to continue",
+            })
+
+            router.push("/auth/verify-email")
+
+            return
+          }
+
+          toast({
+            variant: "success",
+            title: "Success!",
+            description: "Logged in successfully!",
+          })
+          // router.replace("/auth/verify-email")
+        },
+        onError(error) {
+          toast({
+            variant: "destructive",
+            title: "Error!",
+            description: error?.response?.data.message || error?.message || "Something went wrong!",
+          })
+        }
+      }
+    );
   };
 
   return (
@@ -79,8 +138,8 @@ export default function LogInForm({}: Props) {
           Forgot Password
         </Link>
       </div>
-      <button className="p-2 w-full bg-dark text-white font-medium my-4 rounded-md">
-        Sign In
+      <button className="p-2 w-full bg-dark text-white font-medium my-4 rounded-md disabled:bg-gray disabled:cursor-not-allowed">
+      {!!isPending ? "Logging in..." : "Log in"}
       </button>
       <p className="text-sm my-4">
         Don&apos;t have an account?{" "}

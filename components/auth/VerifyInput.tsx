@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/input-otp";
 import mailIcon from "@/assets/svgs/mail.svg";
 import Image from "next/image";
+import { getCookie } from "cookies-next";
 
 type Props = {
   setVerified: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,6 +17,8 @@ type Props = {
 
 export default function VerifyInput({ setVerified }: Props) {
   const [otp, setOtp] = React.useState<string>("");
+
+  const userEmail = getCookie("dEmail")
 
   const handleVerifyToken = () => {
     if (!otp || otp.length < 6) return;
@@ -33,7 +36,7 @@ export default function VerifyInput({ setVerified }: Props) {
       <p className="text-sm text-gray my-2">
         We sent a one-time password (OTP) to
       </p>
-      <h4 className="font-medium">email123@gmail.com</h4>
+      {userEmail && <h4 className="font-medium">{userEmail}</h4>}
       <p className="text-sm text-gray my-2">Please enter OTP to proceed.</p>
 
       <div className="space-y-2 my-4">

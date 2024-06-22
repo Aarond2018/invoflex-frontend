@@ -29,10 +29,10 @@ export const useReactQuery = <T>(key: QueryKey, path: string) => {
 export const useReactMutation = <T, U>(
   path: string,
   method: QueryMethod
-): UseMutationResult<AxiosResponse<ApiResponseSuccess<T>>, AxiosError, U> => {
-  return useMutation<AxiosResponse<ApiResponseSuccess<T>>, AxiosError, U>({
+): UseMutationResult<AxiosResponse<ApiResponseSuccess<T>>, AxiosError<ApiResponseError>, U> => {
+  return useMutation<AxiosResponse<ApiResponseSuccess<T>>, AxiosError<ApiResponseError>, U>({
     mutationFn: (data: U) => {
-      return apiInstance[method]<ApiResponseSuccess<T>>(path, data);
+      return apiInstance[method || "post"]<ApiResponseSuccess<T>>(path, data);
     },
   });
 };

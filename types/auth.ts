@@ -1,5 +1,4 @@
 export interface LoginInputs {
-  name: string;
   email: string;
   password: string;
 }
@@ -8,7 +7,7 @@ export interface SignUpInputs {
   name: string;
   email: string;
   password: string;
-  terms: boolean;
+  terms?: boolean;
 }
 
 export interface OnboardInputs {
@@ -18,6 +17,15 @@ export interface OnboardInputs {
   logo: File[];
 }
 
-export interface SignUpResponse {
-  
+export interface SignUpResponseData {
+  email: string;
+  id: string;
+  isVerified: boolean;
 }
+
+export interface LogInResponseData {
+  email: string;
+  id: string;
+  isVerified: boolean;
+}
+

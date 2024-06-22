@@ -8,12 +8,12 @@ export const apiInstance: AxiosInstance = axios.create({
 //interceptor to check for and append token
 apiInstance.interceptors.request.use(
   function (config) {
-    const token = getCookie("token");
+    const token = getCookie("dToken");
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    console.log("tokenCheck-----")
+    // console.log("tokenCheck-----")
 
     return config;
   },
