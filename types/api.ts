@@ -3,7 +3,8 @@ export type QueryMethod = "post" | "put" | "patch" | "delete"
 export interface ApiResponseSuccess<T> {
   status: string;
   data: T;
-  token?:string;
+  token?: string;
+  message: string;
 }
 
 export interface ApiResponseError {

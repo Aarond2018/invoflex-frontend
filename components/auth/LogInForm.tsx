@@ -11,7 +11,6 @@ import { LoginInputs, LogInResponseData } from "@/types/auth";
 import { useReactMutation } from "@/services/apiHelpers";
 import { useToast } from "@/components/ui/use-toast"
 import { useRouter } from 'next/navigation'
-import { setCookie } from 'cookies-next';
 import { setAuthCookie } from "@/lib/utils";
 
 type Props = {};
