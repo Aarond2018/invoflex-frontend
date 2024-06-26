@@ -13,7 +13,7 @@ export interface SignUpInputs {
 export interface OnboardInputs {
   businessName: string;
   address: string;
-  phone: string;
+  phone: string | undefined;
   logo: File[];
 }
 

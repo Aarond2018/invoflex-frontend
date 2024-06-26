@@ -45,7 +45,7 @@ export default function VerifyInput({ /* setVerified */ userEmail  }: Props) {
           title: "Success!",
           description: "User verified successfully!",
         })
-        router.replace("/dashboard")
+        router.replace("/auth/onboard")
       }, 
       onError(error) {
         toast({

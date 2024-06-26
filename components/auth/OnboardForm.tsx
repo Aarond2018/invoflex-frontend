@@ -9,11 +9,23 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { OnboardSchema } from "@/zodSchemas/schema";
 import { OnboardInputs } from "@/types/auth";
+import { useReactMutation } from "@/services/apiHelpers";
+import { useRouter } from "next/navigation";
+import { useToast } from "../ui/use-toast";
+import { User } from "@/types/user";
 
 type Props = {};
 
 export default function OnboardForm({}: Props) {
-  const [value, setValue] = useState<string>();
+  const [phone, setPhone] = useState<string>();
+
+  const router = useRouter()
+  const { toast } = useToast()
+
+  const { mutate, isPending } = useReactMutation<User, {}>(
+    "/users/completeOnboarding",
+    "patch"
+  );
 
   const {
     register,
@@ -26,6 +38,38 @@ export default function OnboardForm({}: Props) {
 
   const onSubmit: SubmitHandler<OnboardInputs> = (data) => {
     console.log(data);
+
+    const formData = new FormData();
+    formData.append('businessName', data.businessName);
+    formData.append('address', data.address);
+    phone && formData.append('phone', phone);
+    
+    data && data.logo &&
+      Object.values(data.logo).map((file) => {
+        formData.append('logo', file);
+      });
+
+    mutate(formData,
+      {
+        onSuccess(data) {
+          console.log(data.data);
+          
+          toast({
+            variant: "success",
+            title: "Success!",
+            description: "User data updated successfully!",
+          })
+          // router.push("/dashboard")
+        },
+        onError(error) {
+          toast({
+            variant: "destructive",
+            title: "Error!",
+            description: error?.response?.data.message || error?.message || "Something went wrong!",
+          })
+        }
+      }
+    );
   };
 
   return (
@@ -78,8 +122,8 @@ export default function OnboardForm({}: Props) {
           <PhoneInput
             id="phone"
             className="border rounded-md w-full p-2 text-sm"
-            value={value}
-            onChange={setValue}
+            value={phone}
+            onChange={setPhone}
           />
         </div>
         <div className="w-full flex flex-col gap-1 my-4">
@@ -109,14 +153,14 @@ export default function OnboardForm({}: Props) {
                   alt="logo"
                   width={200}
                   height={120}
-                  className="w-full object-cover"
+                  className="w-full h-full object-cover"
                 />
               )}
             </div>
           </div>
         </div>
-        <button className="p-2 w-full bg-dark text-white font-medium my-8 rounded-md">
-          Save & Continue
+        <button className="p-2 w-full bg-dark text-white font-medium my-8 rounded-md disabled:bg-gray disabled:cursor-not-allowed" disabled={isPending}>
+          {!isPending ? "Save & Continue" : "Saving..."}
         </button>
       </form>
     </div>
