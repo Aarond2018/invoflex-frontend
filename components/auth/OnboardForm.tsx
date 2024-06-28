@@ -59,7 +59,7 @@ export default function OnboardForm({}: Props) {
             title: "Success!",
             description: "User data updated successfully!",
           })
-          // router.push("/dashboard")
+          router.replace("/dashboard")
         },
         onError(error) {
           toast({

@@ -71,7 +71,7 @@ export default function LogInForm({}: Props) {
             title: "Success!",
             description: "Logged in successfully!",
           })
-          // router.replace("/auth/verify-email")
+          router.replace("/dashboard")
         },
         onError(error) {
           toast({
