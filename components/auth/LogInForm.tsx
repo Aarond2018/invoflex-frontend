@@ -3,14 +3,14 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/zodSchemas/schema";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { LoginInputs, LogInResponseData } from "@/types/auth";
 import { useReactMutation } from "@/services/apiHelpers";
-import { useToast } from "@/components/ui/use-toast"
-import { useRouter } from 'next/navigation'
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 import { setAuthCookie } from "@/lib/utils";
 
 type Props = {};
@@ -20,18 +20,15 @@ export default function LogInForm({}: Props) {
     "password"
   );
 
-  const { mutate, isPending } = useReactMutation<LogInResponseData, LoginInputs>(
-    "/auth/signin",
-    "post"
-  );
+  const { mutate, isPending } = useReactMutation<
+    LogInResponseData,
+    LoginInputs
+  >("/auth/signin", "post");
 
-  const { mutate:sendOtp } = useReactMutation(
-    "/auth/sendOtp",
-    "post"
-  );
+  const { mutate: sendOtp } = useReactMutation("/auth/sendOtp", "post");
 
-  const router = useRouter()
-  const { toast } = useToast()
+  const router = useRouter();
+  const { toast } = useToast();
 
   const {
     register,
@@ -50,36 +47,39 @@ export default function LogInForm({}: Props) {
       {
         onSuccess(data) {
           console.log(data.data);
-          setAuthCookie(data.data.token, data.data.data.email)
+          setAuthCookie(data.data.token, data.data.data.email);
 
-          if(!data.data.data.isVerified) {
-            sendOtp({})
+          if (!data.data.data.isVerified) {
+            sendOtp({});
 
             toast({
               variant: "caution",
               title: "Oh oh!",
               description: "Verify your account to continue",
-            })
+            });
 
-            router.push("/auth/verify-email")
+            router.push("/auth/verify-email");
 
-            return
+            return;
           }
 
           toast({
             variant: "success",
             title: "Success!",
             description: "Logged in successfully!",
-          })
-          router.replace("/dashboard")
+          });
+          router.replace("/dashboard");
         },
         onError(error) {
           toast({
             variant: "destructive",
             title: "Error!",
-            description: error?.response?.data.message || error?.message || "Something went wrong!",
-          })
-        }
+            description:
+              error?.response?.data.message ||
+              error?.message ||
+              "Something went wrong!",
+          });
+        },
       }
     );
   };
@@ -102,10 +102,14 @@ export default function LogInForm({}: Props) {
           id="email"
           className="border rounded-md w-full p-2 text-sm focus:outline-none"
           {...register("email", {
-            required: "Email is required"
+            required: "Email is required",
           })}
         />
-        {errors.email?.message && <p className="text-xs italic text-red text-right">{errors.email?.message}</p>}
+        {errors.email?.message && (
+          <p className="text-xs italic text-red text-right">
+            {errors.email?.message}
+          </p>
+        )}
       </div>
       <div className="w-full flex flex-col gap-1 my-4">
         <label htmlFor="password" className="text-sm font-semibold">
@@ -130,15 +134,22 @@ export default function LogInForm({}: Props) {
             />
           )}
         </div>
-        {errors.password?.message && <p className="text-xs italic text-red text-right">{errors.password?.message}</p>}
+        {errors.password?.message && (
+          <p className="text-xs italic text-red text-right">
+            {errors.password?.message}
+          </p>
+        )}
       </div>
       <div className="flex w-full justify-end my-2">
         <Link href="/" className="font-mehium text-sm">
           Forgot Password
         </Link>
       </div>
-      <button className="p-2 w-full bg-dark text-white font-medium my-4 rounded-md disabled:bg-gray disabled:cursor-not-allowed">
-      {!!isPending ? "Logging in..." : "Log in"}
+      <button
+        disabled={isPending}
+        className="p-2 w-full bg-dark text-white font-medium my-4 rounded-md disabled:bg-gray disabled:cursor-not-allowed"
+      >
+        {isPending ? "Logging in..." : "Log in"}
       </button>
       <p className="text-sm my-4">
         Don&apos;t have an account?{" "}

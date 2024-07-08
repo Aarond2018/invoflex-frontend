@@ -8,7 +8,7 @@ import { apiInstance } from "./axiosConfig";
 import { AxiosError, AxiosResponse } from "axios";
 import { ApiResponseError, ApiResponseSuccess, QueryMethod } from "@/types/api";
 
-export const useReactQuery = <T>(key: QueryKey, path: string) => {
+export const useReactQuery = <T>(key: string, path: string) => {
   return useQuery<
     AxiosResponse<ApiResponseSuccess<T>>,
     AxiosError<ApiResponseError>
