@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import Image from 'next/image';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -14,19 +13,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, ChevronDown, MoreVertical, Pencil, Trash } from 'lucide-react';
+import { Pencil, Trash } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
   Table,
@@ -36,17 +26,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-// import StatusTag from '../media/StatusTag';
-
-// import searchIcon from '../../../assets/svgs/searchIcon.svg';
 import { Search } from 'lucide-react';
 
-// import { Campaign } from '@/lib/types';
 import Link from 'next/link';
-import { Invoice } from '@/types';
+import { Client, Invoice } from '@/types';
 import TableStatusTag from '../TableStatusTag';
-// import EditCampaignTrigger from '@/components/modals/EditCampaignTrigger';
-// import DeleteCampaignTrigger from '@/components/modals/DeleteCampaignTrigger';
 
 type Props = {
   tableData: Invoice[]
@@ -81,7 +65,7 @@ export const columns: ColumnDef<Invoice>[] = [
     cell: ({ row }) => (
       <div className='capitalize'>
         {/* <Link href={`/brand/posts/review/${row.original._id}`}><p className='font-semibold text-[#101828]'>{row.original.title}</p></Link> */}
-        <p className='font-semibold text-[#101828]'>{row.original._id}</p>
+        <Link href={`/dashboard/invoices/${row.original._id}`} className='font-semibold text-[#101828]'>{row.original._id}</Link>
         {/* <p>{row.original.mediaOrg}</p> */}
       </div>
     ),
@@ -104,9 +88,11 @@ export const columns: ColumnDef<Invoice>[] = [
     cell: ({ row }) => {
       // const niches = row.getValue('niche') as string[]
 
+      const clientName = row.original.addressedTo as Client
+
       return (
         // <div className='capitalize'>{niches[0]}</div>
-        <div className='capitalize'>{row.original.addressedTo.name}</div>
+        <div className='capitalize'>{clientName.name}</div>
       )
     }
   },
@@ -160,33 +146,6 @@ export const columns: ColumnDef<Invoice>[] = [
       </div>
     ),
   },
-
-  // {
-  //   id: 'actions',
-  //   enableHiding: false,
-  //   cell: ({ row }) => {
-  //     const campaign = row.original;
-
-  //     return (
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <Button variant='ghost' className='h-8 w-8 p-0'>
-  //             <span className='sr-only'>Open menu</span>
-  //             <MoreVertical className='h-4 w-4' />
-  //           </Button>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent align='end'>
-  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //           <DropdownMenuSeparator />
-  //           <DropdownMenuItem onSelect={(e: any) => e.preventDefault()}>
-  //             {/* <EditCampaignTrigger campaign={campaign} /> */}
-  //           </DropdownMenuItem>
-  //           <DropdownMenuItem onSelect={(e: any) => e.preventDefault()}>{/* <DeleteCampaignTrigger id={campaign.id} /> */}</DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     );
-  //   },
-  // },
 ];
 
 export default function InvoicesTable( { tableData } : Props  ) {
@@ -200,8 +159,6 @@ export default function InvoicesTable( { tableData } : Props  ) {
 
 
     const data = tableData
-
-    // console.log(tableData)
 
   const table = useReactTable({
     data,
@@ -224,42 +181,6 @@ export default function InvoicesTable( { tableData } : Props  ) {
 
   return (
     <div className='w-full bg-white'>
-      {/* <div className='flex items-center py-4'> */}
-        {/* <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        /> */}
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu> */}
-      {/* </div> */}
       <div className='rounded-md border border-[#EAECF0] shadow-sm'>
         <div className='m-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
           <div className='divide-x divide-grayLight rounded-lg border border-grayLight flex'>
@@ -270,11 +191,6 @@ export default function InvoicesTable( { tableData } : Props  ) {
             </button>
           </div>
           <div className='relative flex w-full max-w-[24rem] items-center rounded-lg border border-grayLight'>
-            {/* <Image
-              src={searchIcon}
-              alt='search-icon'
-              className='absolute left-1'
-            /> */}
             <Search className='w-4 h-4 absolute left-2' />
             <Input
               placeholder='Search for Campaign'
@@ -288,14 +204,7 @@ export default function InvoicesTable( { tableData } : Props  ) {
             />
           </div>
         </div>
-        {/* <Input
-          placeholder="Search for Campaign"
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm m-4"
-        /> */}
+        
         <Table className='border border-grayLight text-[#667085]'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

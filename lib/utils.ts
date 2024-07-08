@@ -14,3 +14,13 @@ export function setAuthCookie(token:string|undefined, email:string):void {
     expires: new Date(Date.now() + 60 * 60 * 24 * 1000)
   });
 }
+
+export const readableDate = (date: string | undefined) => {
+  const formattedDate = date && new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  return formattedDate
+};

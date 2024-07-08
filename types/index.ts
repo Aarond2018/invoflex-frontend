@@ -1,7 +1,9 @@
+import { User } from "./user";
+
 export interface Invoice {
   _id: string;
   createdAt: string;
-  createdBy: string;
+  createdBy: User | string;
   description: string;
   dueDate: string;
   items: InvoiceItem[];
