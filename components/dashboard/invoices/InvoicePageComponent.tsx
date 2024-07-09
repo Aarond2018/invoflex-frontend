@@ -137,8 +137,8 @@ export default function InvoicePageComponent({ id }: Props) {
                   <TableRow>
                     <TableHead>Description</TableHead>
                     <TableHead>Quantity</TableHead>
-                    <TableHead>Rate(N)</TableHead>
-                    <TableHead>Amount(N)</TableHead>
+                    <TableHead>Rate(&#8358;)</TableHead>
+                    <TableHead>Amount(&#8358;)</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -151,9 +151,9 @@ export default function InvoicePageComponent({ id }: Props) {
                         <p>{item.quantity}</p>
                       </TableCell>
                       <TableCell>
-                        <p>{item.rate}</p>
+                        <p>{item.rate.toLocaleString()}</p>
                       </TableCell>
-                      <TableCell>{item.quantity * item.rate}</TableCell>
+                      <TableCell>{(item.quantity * item.rate).toLocaleString()}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -166,7 +166,7 @@ export default function InvoicePageComponent({ id }: Props) {
                   <div className="flex gap-2 mb-2">
                     <p>
                       <span className="font-semibold">Sub-total: </span>{" "}
-                      <span className="">
+                      <span className="">&#8358;
                         {data.data.data.items
                           .reduce(
                             (total, row) => total + row.quantity * row.rate,
@@ -183,7 +183,7 @@ export default function InvoicePageComponent({ id }: Props) {
                   <div className="flex gap-2">
                     <p>
                       <span className="font-semibold">Total:</span>{" "}
-                      <span className="text-xl">
+                      <span className="text-xl">&#8358;
                         {(
                           data.data.data.items.reduce(
                             (total, row) => total + row.quantity * row.rate,

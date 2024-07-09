@@ -1,9 +1,6 @@
 "use client";
 
-import React, {
-  ChangeEvent,
-  useState,
-} from "react";
+import React, { ChangeEvent, useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Loader, Trash } from "lucide-react";
@@ -62,14 +59,16 @@ export default function NewIvoiceForm({}: Props) {
   ]);
   const [taxApplied, setTaxApplied] = useState<number>(0);
   const [note, setNote] = useState<string | undefined>();
-  const [statusTag, setStatusTag] = useState<"DRAFT" | "SENT" | undefined>()
+  const [statusTag, setStatusTag] = useState<"DRAFT" | "SENT" | undefined>();
 
-  const {
-    data: clientsData,
-    isSuccess: clientFetched,
-  } = useReactQuery<Client[]>("get-clients", "/clients");
+  const { data: clientsData, isSuccess: clientFetched } = useReactQuery<
+    Client[]
+  >("get-clients", "/clients");
 
-  const { mutate, isPending:creatingInvoice } = useReactMutation<Invoice, any>("/invoices", "post");
+  const { mutate, isPending: creatingInvoice } = useReactMutation<Invoice, any>(
+    "/invoices",
+    "post"
+  );
 
   const { toast } = useToast();
   const router = useRouter();
@@ -101,64 +100,70 @@ export default function NewIvoiceForm({}: Props) {
   };
 
   const handleSubmit = async (event: any, type: "DRAFT" | "SENT") => {
-    event.preventDefault()
-    setStatusTag(type)
+    event.preventDefault();
+    setStatusTag(type);
 
     const updatedItems = items.map((item) => {
       return {
         amount: +item.amount,
         quantity: +item.quantity,
         rate: +item.rate,
-        description: item.description
-      }
-    })
+        description: item.description,
+      };
+    });
 
     const invoiceObject = {
       description,
       dueDate,
       taxApplied,
-      addressedTo : client,
+      addressedTo: client,
       items: updatedItems,
       note,
-      totalAmount: items.reduce((total, row) => total + row.amount, 0) +
-      items.reduce((total, row) => total + row.amount, 0) *
-        (taxApplied / 100),
+      totalAmount:
+        items.reduce((total, row) => total + row.amount, 0) +
+        items.reduce((total, row) => total + row.amount, 0) *
+          (taxApplied / 100),
       status: type,
-    }
+    };
 
-    const parsedObject = InvoiceSchema.safeParse(invoiceObject)
+    const parsedObject = InvoiceSchema.safeParse(invoiceObject);
 
-    if(!parsedObject.data) {
+    if (!parsedObject.data) {
       // const formattedError = Object.values(parsedObject.error.flatten().fieldErrors).flat().join(". ")
-      const formattedError = Object.entries(parsedObject.error.flatten().fieldErrors).map(entry => entry.join(": ")).join(" \n ")
+      const formattedError = Object.entries(
+        parsedObject.error.flatten().fieldErrors
+      )
+        .map((entry) => entry.join(": "))
+        .join(" \n ");
       // console.error(Object.entries(parsedObject.error.flatten().fieldErrors).map(entry => entry.join(": ")).join(" --"))
 
       return toast({
         variant: "destructive",
         title: "Error!",
-        description: <p>{formattedError}</p> || "Invalid input, check form again",
+        description:
+          <p>{formattedError}</p> || "Invalid input, check form again",
       });
     }
 
     mutate(
       {
         ...invoiceObject,
-        dueDate: invoiceObject.dueDate?.toISOString()
+        dueDate: invoiceObject.dueDate?.toISOString(),
       },
       {
         onSuccess(data) {
           console.log(data.data.data);
 
-            toast({
-              variant: "success",
-              title: "Success!",
-              description: "Invoice created successfully!",
-            });
-          setStatusTag(undefined)
+          toast({
+            variant: "success",
+            title: "Success!",
+            description: "Invoice created successfully!",
+          });
+          setStatusTag(undefined);
           router.push(`/dashboard/invoices/[${data.data.data._id}]`);
         },
         onError(error) {
-          console.log("error-----", error)
+          console.log("error-----", error);
           toast({
             variant: "destructive",
             title: "Error!",
@@ -167,11 +172,11 @@ export default function NewIvoiceForm({}: Props) {
               error?.message ||
               "Something went wrong!",
           });
-          setStatusTag(undefined)
+          setStatusTag(undefined);
         },
       }
     );
-  }
+  };
 
   return (
     <form className="my-8">
@@ -207,7 +212,9 @@ export default function NewIvoiceForm({}: Props) {
           <div className="flex justify-between">
             <p className="font-semibold items-center">To: </p>
             <CreateClientModal>
-              <span className="underline text-sm cursor-pointer">New Client</span>
+              <span className="underline text-sm cursor-pointer">
+                New Client
+              </span>
             </CreateClientModal>
           </div>
           <Select value={client} onValueChange={setClient}>
@@ -271,8 +278,8 @@ export default function NewIvoiceForm({}: Props) {
               <TableHead>Actions</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Quantity</TableHead>
-              <TableHead>Rate(N)</TableHead>
-              <TableHead>Amount(N)</TableHead>
+              <TableHead>Rate(&#8358;)</TableHead>
+              <TableHead>Amount(&#8358;)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -280,9 +287,7 @@ export default function NewIvoiceForm({}: Props) {
               <TableRow key={index}>
                 <TableCell>
                   {items.length === 1 ? (
-                    <Trash
-                    className="w-6 h-6 text-gray cursor-not-allowed"
-                  />
+                    <Trash className="w-6 h-6 text-gray cursor-not-allowed" />
                   ) : (
                     <Trash
                       className="w-6 h-6 cursor-pointer text-red"
@@ -349,6 +354,7 @@ export default function NewIvoiceForm({}: Props) {
               <p>
                 <span className="font-semibold">Sub-total: </span>{" "}
                 <span className="">
+                  &#8358;
                   {items
                     .reduce((total, row) => total + row.amount, 0)
                     .toLocaleString()}
@@ -372,6 +378,7 @@ export default function NewIvoiceForm({}: Props) {
               <p>
                 <span className="font-semibold">Total:</span>{" "}
                 <span className="text-xl">
+                  &#8358;
                   {(
                     items.reduce((total, row) => total + row.amount, 0) +
                     items.reduce((total, row) => total + row.amount, 0) *
@@ -399,10 +406,18 @@ export default function NewIvoiceForm({}: Props) {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 my-8 justify-end">
-        <button className="p-2 px-6 bg-gray text-white rounded disabled:bg-slate-200 cursor-pointer" onClick={(event) => handleSubmit(event, "DRAFT")} disabled={creatingInvoice}>
+        <button
+          className="p-2 px-6 bg-gray text-white rounded disabled:bg-slate-200 cursor-pointer"
+          onClick={(event) => handleSubmit(event, "DRAFT")}
+          disabled={creatingInvoice}
+        >
           {statusTag === "DRAFT" ? "Saving..." : "Save draft"}
         </button>
-        <button className="p-2 px-6 bg-green text-white rounded disabled:bg-slate-200 cursor-pointer" onClick={(event) => handleSubmit(event, "SENT")} disabled={creatingInvoice}>
+        <button
+          className="p-2 px-6 bg-green text-white rounded disabled:bg-slate-200 cursor-pointer"
+          onClick={(event) => handleSubmit(event, "SENT")}
+          disabled={creatingInvoice}
+        >
           {statusTag === "SENT" ? "Sending..." : "Save and Send"}
         </button>
       </div>

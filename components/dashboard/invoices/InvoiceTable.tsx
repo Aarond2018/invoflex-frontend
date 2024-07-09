@@ -31,6 +31,7 @@ import { Search } from 'lucide-react';
 import Link from 'next/link';
 import { Client, Invoice } from '@/types';
 import TableStatusTag from '../TableStatusTag';
+import DeleteInvoiceModal from './DeleteInvoiceModal';
 
 type Props = {
   tableData: Invoice[]
@@ -139,8 +140,10 @@ export const columns: ColumnDef<Invoice>[] = [
       <div className='capitalize'>
         <div className='w-full'>
           <div className='flex gap-2'>
-            <button className='p-2 rounded flex justify-center items-center transition-all bg-green-light text-green-dark hover:bg-green hover:text-white'><Pencil className='w-4 h-4' /></button>
-            <button className='p-2 rounded flex justify-center items-center transition-all bg-red-100 text-red hover:bg-red hover:text-white'><Trash className='w-4 h-4' /></button>
+            {/* <button className='p-2 rounded flex justify-center items-center transition-all bg-green-light text-green-dark hover:bg-green hover:text-white'><Pencil className='w-4 h-4' /></button> */}
+            <DeleteInvoiceModal id={row.original._id}>
+              <button className='p-2 rounded flex justify-center items-center transition-all bg-red-100 text-red hover:bg-red hover:text-white'><Trash className='w-4 h-4' /></button>
+            </DeleteInvoiceModal>
           </div>
         </div>
       </div>
