@@ -14,53 +14,66 @@ import { Client, ClientInputs } from "@/types";
 import { CreateClientSchema } from "@/zodSchemas/schema";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "../ui/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/components/ui/use-toast";
 
 type Props = {
   children: ReactNode;
+  clientObj: {
+    _id: string;
+    name: string;
+    email: string;
+    address: string;
+  };
 };
 
-export default function CreateClientModal({ children }: Props) {
+export default function EditClient({ children, clientObj }: Props) {
   const [openModal, setOpenModal] = useState<boolean>(false);
 
-  const { mutate, isPending } = useReactMutation<Client, ClientInputs>("/clients", "post");
-  const queryClient = useQueryClient()
+  const { mutate, isPending } = useReactMutation<Client, ClientInputs>(
+    `/clients/${clientObj._id}`,
+    "put"
+  );
+  const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset
-  } = useForm<ClientInputs>({ resolver: zodResolver(CreateClientSchema) });
+  } = useForm<ClientInputs>({
+    resolver: zodResolver(CreateClientSchema),
+    defaultValues: {
+      name: clientObj.name,
+      email: clientObj.email,
+      address: clientObj.address,
+    },
+  });
 
   const { toast } = useToast();
 
   const onSubmit: SubmitHandler<ClientInputs> = (data) => {
-    mutate(data,{
-        onSuccess() {
-          toast({
-            variant: "success",
-            title: "Success",
-            description: "Client created Successfully!",
-          });
-          
-          queryClient.invalidateQueries({ queryKey: ['get-clients'] })
-          reset()
-          setOpenModal(false)
-        },
-        onError(error) {
-          toast({
-            variant: "destructive",
-            title: "Error!",
-            description:
-              error?.response?.data.message ||
-              error?.message ||
-              "Something went wrong!",
-          });
-        },
-      }
-    );
+    mutate(data, {
+      onSuccess() {
+        toast({
+          variant: "success",
+          title: "Success",
+          description: "Client edited Successfully!",
+        });
+
+        queryClient.invalidateQueries({ queryKey: ["get-clients"] });
+        setOpenModal(false);
+      },
+      onError(error) {
+        toast({
+          variant: "destructive",
+          title: "Error!",
+          description:
+            error?.response?.data.message ||
+            error?.message ||
+            "Something went wrong!",
+        });
+      },
+    });
   };
 
   return (
@@ -68,8 +81,8 @@ export default function CreateClientModal({ children }: Props) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Client</DialogTitle>
-          <DialogDescription>Create a new client</DialogDescription>
+          <DialogTitle>Edit Client</DialogTitle>
+          <DialogDescription>Update client&apos;s details</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="w-full flex flex-col gap-2">
@@ -127,7 +140,7 @@ export default function CreateClientModal({ children }: Props) {
               className="bg-green-dark text-white text-sm py-2 px-6 rounded font-semibold disabled:bg-gray disabled:cursor-not-allowed"
               disabled={isPending}
             >
-              {isPending ? "Creating..." : "Create Client"}
+              {isPending ? "Editing..." : "Edit Client"}
             </button>
           </div>
         </form>
