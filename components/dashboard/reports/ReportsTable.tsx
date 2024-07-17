@@ -83,7 +83,6 @@ export const columns: ColumnDef<Invoice>[] = [
     header: 'Client Name',
     cell: ({ row }) => {
       const clientName = row.original.addressedTo as Client
-      console.log(clientName)
 
       return (
         <div className='capitalize'>{clientName.name}</div>

@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/popover";
 import { useToast } from "@/components/ui/use-toast";
 import ReportsTable from "./ReportsTable";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { DownloadReport } from "../DownloadReport";
 
 type Props = {};
 
@@ -34,7 +36,7 @@ type ReportObj = {
   addressedTo?: string;
   dateFrom?: string;
   dateTo?: string;
-}
+};
 
 export default function ReportsPageComponent({}: Props) {
   const [status, setStatus] = useState<string>("all");
@@ -54,10 +56,12 @@ export default function ReportsPageComponent({}: Props) {
     isError,
   } = useReactQuery<Client[]>("get-clients", "/clients");
 
-  const { mutate, isPending, isSuccess, data } = useReactMutation<Invoice[], ReportObj>(
-    "/reports",
-    "post"
-  );
+  const {
+    mutate,
+    isPending,
+    isSuccess,
+    data: reportData,
+  } = useReactMutation<Invoice[], ReportObj>("/reports", "post");
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -70,38 +74,37 @@ export default function ReportsPageComponent({}: Props) {
   const generateReport = () => {
     const reportObj = {
       status: status === "all" ? undefined : status,
-      addressedTo: clientType === "all" ? undefined : !client ? undefined : client,
+      addressedTo:
+        clientType === "all" ? undefined : !client ? undefined : client,
       dateFrom: period === "allTime" ? undefined : dateFrom?.toISOString(),
       dateTo: period === "allTime" ? undefined : dateTo?.toISOString(),
-    }
+    };
 
-    mutate(reportObj,
-      {
-        onSuccess(data) {
-          console.log(data.data.data);
+    mutate(reportObj, {
+      onSuccess(data) {
+        // console.log(data.data.data);
 
-          toast({
-            variant: "success",
-            title: "Success!",
-            description: "Report generated successfully!",
-          });
-        },
-        onError(error) {
-          console.log("error-----", error);
-          toast({
-            variant: "destructive",
-            title: "Error!",
-            description:
-              error?.response?.data.message ||
-              error?.message ||
-              "Something went wrong!",
-          });
-        },
-      }
-    );
+        toast({
+          variant: "success",
+          title: "Success!",
+          description: "Report generated successfully!",
+        });
+      },
+      onError(error) {
+        console.log("error-----", error);
+        toast({
+          variant: "destructive",
+          title: "Error!",
+          description:
+            error?.response?.data.message ||
+            error?.message ||
+            "Something went wrong!",
+        });
+      },
+    });
+  };
 
-    console.log(reportObj)
-  }
+  console.log(reportData?.data.data);
 
   return (
     <DBMainWrap>
@@ -248,15 +251,25 @@ export default function ReportsPageComponent({}: Props) {
           </div>
         </div>
         <div className="flex flex-col gap-4 md_sm:flex-row justify-between my-8">
-          <button onClick={generateReport} disabled={isPending} className="py-2 px-6 bg-green-dark text-white font-semibold text-sm rounded disabled:bg-gray">
+          <button
+            onClick={generateReport}
+            disabled={isPending}
+            className="py-2 px-6 bg-green-dark text-white font-semibold text-sm rounded disabled:bg-gray"
+          >
             Generate Report
           </button>
-          <button className="py-2 px-6 bg-yellow text-white font-semibold text-sm rounded disabled:bg-gray">
-            Download Report
-          </button>
+          {isSuccess && (
+            <PDFDownloadLink
+              document={<DownloadReport report={reportData.data.data} />}
+              fileName="invoice.pdf"
+              className="py-2 px-6 bg-yellow text-white font-semibold text-sm rounded disabled:bg-gray"
+            >
+              {({ loading }) => (loading ? "Loading..." : "Download Report!")}
+            </PDFDownloadLink>
+          )}
         </div>
 
-        {isSuccess && (<ReportsTable tableData={data?.data.data} /> )}
+        {isSuccess && <ReportsTable tableData={reportData?.data.data} />}
       </div>
     </DBMainWrap>
   );
