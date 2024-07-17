@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import * as React from "react";
+import * as React from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,12 +12,12 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table";
-import { Pencil, Trash } from "lucide-react";
+} from '@tanstack/react-table';
+import { Pencil, Trash } from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -25,103 +25,108 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Search } from "lucide-react";
+} from '@/components/ui/table';
+import { Search } from 'lucide-react';
 
-import { Client, Invoice } from "@/types";
-import DeleteClientModal from "./DeleteClientModal";
-import EditClient from "./EditClient";
+import Link from 'next/link';
+import { Client, Invoice } from '@/types';
+import TableStatusTag from '../TableStatusTag';
 
 type Props = {
-  tableData: Client[];
-};
+  tableData: Invoice[]
+}
 
-export const columns: ColumnDef<Client>[] = [
+export const columns: ColumnDef<Invoice>[] = [
   {
-    id: "select",
+    id: 'select',
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label='Select all'
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label='Select row'
       />
     ),
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: "id",
-    header: "Client Id",
+    accessorKey: 'id',
+    header: 'Invoice No',
     cell: ({ row }) => (
-      <div className="capitalize">
-        <p>#{row.original._id}</p>
+      <div className='capitalize'>
+        <Link href={`/dashboard/invoices/${row.original._id}`} className='font-semibold text-[#101828]'>{row.original._id}</Link>
+        {/* <p>{row.original.mediaOrg}</p> */}
       </div>
     ),
   },
   {
-    accessorKey: "name",
-    header: "Client Name",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        <p>{row.original.name}</p>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: 'totalAmount',
+    header: 'Total Amount',
     cell: ({ row }) => {
       return (
-        <div className="">
-          <p>{row.original.email}</p>
-        </div>
-      );
-    },
+        <div className='capitalize'>&#8358;{row.original.totalAmount.toLocaleString()}</div>
+      )
+    }
   },
   {
-    accessorKey: "actions",
-    header: "Actions",
+    accessorKey: 'addressedTo',
+    header: 'Client Name',
     cell: ({ row }) => {
-      const clientObj = {
-        _id: row.original._id,
-        name: row.original.name,
-        email: row.original.email,
-        address: row.original.address
-      }
+      const clientName = row.original.addressedTo as Client
+      console.log(clientName)
 
       return (
-        <div className="capitalize">
-          <div className="w-full">
-            <div className="flex gap-2">
-              <EditClient clientObj={clientObj}>
-                <button className="p-2 rounded flex justify-center items-center transition-all bg-green-light text-green-dark hover:bg-green hover:text-white">
-                  <Pencil className="w-4 h-4" />
-                </button>
-              </EditClient>
-              <DeleteClientModal id={row.original._id}>
-                <button className="p-2 rounded flex justify-center items-center transition-all bg-red-100 text-red hover:bg-red hover:text-white">
-                  <Trash className="w-4 h-4" />
-                </button>
-              </DeleteClientModal>
-            </div>
-          </div>
-        </div>
-      );
+        <div className='capitalize'>{clientName.name}</div>
+      )
+    }
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'Date Created',
+    cell: ({ row }) => {
+      const dateString = row.original.createdAt
+      const formattedDate = new Date(dateString).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+      
+      return (
+        <div className='capitalize'>{formattedDate}</div>
+      )
     },
+  },
+  {
+    accessorKey: 'dueDate',
+    header: 'Due date',
+    cell: ({ row }) => {
+      const dateString = row.original.dueDate
+      const formattedDate = new Date(dateString).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+      
+      return (
+        <div className='capitalize'>{formattedDate}</div>
+      )
+    },
+  },
+  
+  {
+    accessorKey: 'status',
+    header: 'status',
+    cell: ({ row }) => (
+      <div className='capitalize'>
+        <TableStatusTag status={row.original.status} />
+      </div>
+    ),
   },
 ];
 
-export default function ClientsTable({ tableData }: Props) {
+export default function ReportsTable( { tableData } : Props  ) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -130,7 +135,8 @@ export default function ClientsTable({ tableData }: Props) {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const data = tableData;
+
+    const data = tableData
 
   const table = useReactTable({
     data,
@@ -152,36 +158,21 @@ export default function ClientsTable({ tableData }: Props) {
   });
 
   return (
-    <div className="w-full bg-white mt-10">
-      <div className="rounded-md border border-[#EAECF0] shadow-sm">
-        <div className="m-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="relative flex w-full max-w-[24rem] items-center rounded-lg border border-grayLight">
-            <Search className="w-4 h-4 absolute left-2" />
-            <Input
-              placeholder="Search for Campaign"
-              value={
-                (table.getColumn("name")?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table.getColumn("name")?.setFilterValue(event.target.value)
-              }
-              className="h-full w-full border-none py-2 pl-8 focus:ring-[none]"
-            />
-          </div>
-        </div>
-
-        <Table className="border border-grayLight text-[#667085]">
+    <div className='w-full bg-white'>
+      <div className='rounded-md border border-[#EAECF0] shadow-sm'>
+                
+        <Table className='border border-grayLight text-[#667085]'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
                 key={headerGroup.id}
-                className="border border-grayLight bg-[#D0D5DD]/20"
+                className='border border-grayLight bg-[#D0D5DD]/20'
               >
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
                       key={header.id}
-                      className="font-semibold text-[#667085]"
+                      className='font-semibold text-[#667085]'
                     >
                       {header.isPlaceholder
                         ? null
@@ -200,8 +191,8 @@ export default function ClientsTable({ tableData }: Props) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className="border border-grayLight"
+                  data-state={row.getIsSelected() && 'selected'}
+                  className='border border-grayLight'
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -217,16 +208,16 @@ export default function ClientsTable({ tableData }: Props) {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className='h-24 text-center'
                 >
-                  No Clients yet!.
+                  No results.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 pt-4 pb-8 px-4">
+      <div className="flex items-center justify-end space-x-2 pt-4 pb-8">
         <div className="flex-1 text-sm text-muted-foreground px-2">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.

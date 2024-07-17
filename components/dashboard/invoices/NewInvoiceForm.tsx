@@ -4,7 +4,7 @@ import React, { ChangeEvent, useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Loader, Trash } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, readableDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -240,7 +240,7 @@ export default function NewIvoiceForm({}: Props) {
         <div className="flex-1 flex flex-col gap-4">
           <div className="">
             <p className="font-semibold">Date</p>
-            <span className="text-sm">6th july, 2024</span>
+            <span className="text-sm">{readableDate(new Date(Date.now()).toString())}</span>
           </div>
           <div className="flex flex-col gap-1">
             <span className="font-semibold">Due Date</span>

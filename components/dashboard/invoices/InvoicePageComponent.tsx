@@ -24,6 +24,8 @@ import {
 
 import { useReactQuery } from "@/services/apiHelpers";
 import { Invoice } from "@/types";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { DownloadPdf } from "../DownloadPdf";
 
 type Props = {
   id: string;
@@ -62,23 +64,38 @@ export default function InvoicePageComponent({ id }: Props) {
         </div>
 
         <section className="my-8">
+          <div className="mb-4 flex justify-end">
+          {isSuccess && (
+              <PDFDownloadLink
+              document={<DownloadPdf invoice={data.data.data} />}
+              fileName="invoice.pdf"
+              className={`px-4 py-2 bg-green-dark text-white font-semibold rounded text-sm`}
+            >
+              {({ loading }) =>
+                loading ? "Loading..." : "Download Invoice!"
+              }
+            </PDFDownloadLink>
+            )}
+          </div>
+
           <div className="border-b">
             {isSuccess && (
               <div
-              className={`py-2 px-6 inline rounded ${
-                data.data.data.status === "DRAFT"
-                  ? "bg-gray text-white"
-                  : data.data.data.status === "SENT"
-                  ? "bg-yellow-light text-yellow"
-                  : data.data.data.status === "PAID"
-                  ? "bg-green-light text-green-dark"
-                  : "bg-red-100 text-red"
-              }`}
-            >
-              <span>{data.data.data.status}</span>
-            </div>
+                // onClick={() => generatePDF(data.data.data)}
+                className={`py-2 px-6 inline rounded ${
+                  data.data.data.status === "DRAFT"
+                    ? "bg-gray text-white"
+                    : data.data.data.status === "SENT"
+                    ? "bg-yellow-light text-yellow"
+                    : data.data.data.status === "PAID"
+                    ? "bg-green-light text-green-dark"
+                    : "bg-red-100 text-red"
+                }`}
+              >
+                <span>{data.data.data.status}</span>
+              </div>
             )}
-
+            
             <p className="my-8 flex w-full max-w-[35rem]">
               {isSuccess && data.data.data.description}
             </p>
@@ -153,7 +170,9 @@ export default function InvoicePageComponent({ id }: Props) {
                       <TableCell>
                         <p>{item.rate.toLocaleString()}</p>
                       </TableCell>
-                      <TableCell>{(item.quantity * item.rate).toLocaleString()}</TableCell>
+                      <TableCell>
+                        {(item.quantity * item.rate).toLocaleString()}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -166,7 +185,8 @@ export default function InvoicePageComponent({ id }: Props) {
                   <div className="flex gap-2 mb-2">
                     <p>
                       <span className="font-semibold">Sub-total: </span>{" "}
-                      <span className="">&#8358;
+                      <span className="">
+                        &#8358;
                         {data.data.data.items
                           .reduce(
                             (total, row) => total + row.quantity * row.rate,
@@ -183,7 +203,8 @@ export default function InvoicePageComponent({ id }: Props) {
                   <div className="flex gap-2">
                     <p>
                       <span className="font-semibold">Total:</span>{" "}
-                      <span className="text-xl">&#8358;
+                      <span className="text-xl">
+                        &#8358;
                         {(
                           data.data.data.items.reduce(
                             (total, row) => total + row.quantity * row.rate,
