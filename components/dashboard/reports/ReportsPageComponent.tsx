@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import DBMainWrap from "../DBMainWrap";
 import { useReactMutation, useReactQuery } from "@/services/apiHelpers";
 import { Client, Invoice } from "@/types";
-import CreateClientModal from "../CreateClientModal";
+
 import {
   Select,
   SelectContent,
@@ -103,8 +103,6 @@ export default function ReportsPageComponent({}: Props) {
       },
     });
   };
-
-  console.log(reportData?.data.data);
 
   return (
     <DBMainWrap>
@@ -261,7 +259,7 @@ export default function ReportsPageComponent({}: Props) {
           {isSuccess && (
             <PDFDownloadLink
               document={<DownloadReport report={reportData.data.data} />}
-              fileName="invoice.pdf"
+              fileName="report.pdf"
               className="py-2 px-6 bg-yellow text-white font-semibold text-sm rounded disabled:bg-gray"
             >
               {({ loading }) => (loading ? "Loading..." : "Download Report!")}

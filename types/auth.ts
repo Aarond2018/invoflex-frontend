@@ -29,3 +29,10 @@ export interface LogInResponseData {
   isVerified: boolean;
 }
 
+export interface UpdateBusinessInputs {
+  name: string;
+  businessName: string;
+  address: string;
+  phone: string | undefined;
+  logo: File[];
+}

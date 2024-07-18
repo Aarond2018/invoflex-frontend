@@ -8,7 +8,7 @@ import {
   Image,
 } from "@react-pdf/renderer";
 import { Invoice } from "@/types";
-import { readableDate, shortDate } from "@/lib/utils";
+import { shortDate } from "@/lib/utils";
 
 type Props = {
   report: Invoice[];

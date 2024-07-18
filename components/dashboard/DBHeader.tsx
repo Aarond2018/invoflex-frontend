@@ -7,6 +7,7 @@ import {
   SheetContent,
   SheetDescription,
   SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import logo from "../../public/logo/logo.png";
@@ -34,6 +35,7 @@ export default function DBHeader({ title }: Props) {
           </SheetTrigger>
           <SheetContent>
             <SheetHeader>
+            <SheetTitle> </SheetTitle>
               <SheetDescription>
                 <div className="flex flex-col gap-8">
                   <Link href="/"><Image src={logo} alt="invoflex-logo" className="w-24" /></Link>
