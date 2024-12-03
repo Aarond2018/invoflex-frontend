@@ -14,21 +14,30 @@ import logo from "../../public/logo/logo.png";
 import Image from "next/image";
 import SidebarLinks, { links } from "./SidebarLinks";
 import Link from "next/link";
+import { deleteAuthCookie } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 type Props = {
   title: string;
 };
 
 export default function DBHeader({ title }: Props) {
+  const router = useRouter()
+
+  const handleLogout = () => {
+    deleteAuthCookie()
+    router.replace("/auth/login")
+  }
+
   return (
     <header className="flex justify-between items-center border-b pb-4">
       <h1 className="text-2xl hidden sm:flex font-semibold">{title}</h1>
       <Link href="/dashboard"><Image src={logo} alt="invoflex-logo" className="flex w-20 sm:hidden" /></Link>
       <div className="flex items-center">
-        <div className="hidden sm:flex gap-1 text-red cursor-pointer">
+        <button onClick={handleLogout} className="hidden sm:flex gap-1 text-red cursor-pointer">
           <LogOut className="w-6 h-6 font-semibold" />
           <span>Log out</span>
-        </div>
+        </button>
         <Sheet>
           <SheetTrigger>
             <Menu className="w-6 h-6 sm:hidden" />

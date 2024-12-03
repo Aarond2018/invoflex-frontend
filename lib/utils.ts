@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { setCookie } from 'cookies-next';
+import { deleteCookie, setCookie } from 'cookies-next';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -13,6 +13,11 @@ export function setAuthCookie(token:string|undefined, email:string):void {
   setCookie('dEmail', email, {
     expires: new Date(Date.now() + 60 * 60 * 24 * 1000)
   });
+}
+
+export function deleteAuthCookie() {
+  deleteCookie("dToken")
+  deleteCookie("dEmail")
 }
 
 export const readableDate = (date: string | undefined) => {

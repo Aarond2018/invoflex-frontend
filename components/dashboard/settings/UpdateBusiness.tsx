@@ -53,8 +53,7 @@ export default function UpdateBusiness({ userData }: Props) {
     formData.append("address", data.address);
     phone && formData.append("phone", phone);
 
-    data &&
-      data.logo &&
+    data.logo && data.logo.length > 0 &&
       Object.values(data.logo).map((file) => {
         formData.append("logo", file);
       });
@@ -178,7 +177,8 @@ export default function UpdateBusiness({ userData }: Props) {
                   height={120}
                   className="w-full h-full object-cover"
                 />
-              ) : userData.logo ? (
+              ) :
+               userData.logo ? (
                 <Image
                   src={userData.logo}
                   width={144}
@@ -186,7 +186,7 @@ export default function UpdateBusiness({ userData }: Props) {
                   alt="user-image"
                   className="w-full h-full object-cover"
                 />
-              ) : null}
+              ) : ""}
             </div>
           </div>
         </div>

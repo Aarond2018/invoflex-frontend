@@ -24,7 +24,7 @@ export default function ClientPageComponent({}: Props) {
     return (<p>Something went wrong!</p>)
   }
 
-  console.log(isSuccess, data?.data.data)
+  // console.log(isSuccess, data?.data.data)
 
   return (
     <DBMainWrap>
