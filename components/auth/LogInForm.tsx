@@ -115,7 +115,7 @@ export default function LogInForm({}: Props) {
         <label htmlFor="password" className="text-sm font-semibold">
           Password
         </label>
-        <div className="w-full border relative">
+        <div className="w-full relative">
           <input
             type={passwordType}
             id="password"

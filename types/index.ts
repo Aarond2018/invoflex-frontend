@@ -37,3 +37,15 @@ export interface ClientInputs {
   email: string;
   address: string;
 }
+
+export interface UserDashboardData {
+  totalAmount: number;
+  totalClients: number;
+  totalInvoices: number;
+  recentInvoices: Invoice[];
+  invoicesAgg: Array<{
+    _id: "DRAFT" | "SENT" | "PAID" | "OVERDUE";
+    count: number;
+    total: number;
+  }>
+}

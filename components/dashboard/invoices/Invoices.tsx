@@ -3,7 +3,7 @@
 import React from "react";
 import DBMainWrap from "../DBMainWrap";
 import CardGrid from "../CardGrid";
-import { FileClock, FileInput, FileOutput, LineChart, Plus } from "lucide-react";
+import { FileCheck2, FileClock, FileInput, FileOutput, LineChart, Plus } from "lucide-react";
 import { useReactQuery } from "@/services/apiHelpers";
 import { Invoice } from "@/types";
 import InvoicesTable from "./InvoiceTable";
@@ -56,7 +56,7 @@ export default function Invoices({}: Props) {
               <h1 className="text-lg font-semibold">Paid Invoices</h1>
               <p className="text-xs font-light">Total amount received</p>
               </div>
-              <FileInput className="w-6 h-6" />
+              <FileCheck2 className="w-6 h-6" />
             </div>
             <p className="text-3xl font-semibold">&#8358;<CountUp end={1000} /></p>
           </div>
@@ -73,7 +73,7 @@ export default function Invoices({}: Props) {
         </CardGrid>
 
         <section className="my-6 ">
-          <h1 className="text-lg font-semibold my-4">Get Started, Aaron.</h1>
+          <h1 className="text font-semibold my-4">Get Started,</h1>
           <hr />
           <Link href="/dashboard/invoices/new" className="w-full max-w-[30rem] p-4 flex gap-2 items-center border rounded-lg my-6 bg-white">
             <div className="p-2 rounded-full bg-green-light"><Plus className="w-8 h-8 text-green-dark" /></div>
