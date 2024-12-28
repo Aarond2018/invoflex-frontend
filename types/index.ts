@@ -44,9 +44,16 @@ export interface UserDashboardData {
   totalInvoices: number;
   recentInvoices: Invoice[];
   clients: Client[];
-  invoicesAgg: Array<{
-    _id: "DRAFT" | "SENT" | "PAID" | "OVERDUE";
-    count: number;
-    total: number;
-  }>
+  // invoicesAgg: Array<{
+  //   _id: "DRAFT" | "SENT" | "PAID" | "OVERDUE";
+  //   count: number;
+  //   total: number;
+  // }>
+  invoicesAgg: AggDataItem[];
+}
+
+export interface AggDataItem {
+  count: number;
+  total: number;
+  _id: "DRAFT" | "SENT" | "PAID" | "OVERDUE";
 }

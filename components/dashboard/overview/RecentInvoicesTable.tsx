@@ -40,7 +40,7 @@ export const columns: ColumnDef<Invoice>[] = [
     cell: ({ row }) => (
       <div className='capitalize'>
         {/* <Link href={`/brand/posts/review/${row.original._id}`}><p className='font-semibold text-[#101828]'>{row.original.title}</p></Link> */}
-        <Link href={`/dashboard/invoices/${row.original._id}`} className='font-semibold text-[#101828]'>{`${row.original._id.slice(0, 2)}...${row.original._id.slice(-3)}`}</Link>
+        <Link href={`/dashboard/invoices/${row.original._id}`} className='font-semibold text-[#101828]'>{`#${row.original._id.slice(0, 2)}...${row.original._id.slice(-3)}`}</Link>
         {/* <p>{row.original.mediaOrg}</p> */}
       </div>
     ),
@@ -179,7 +179,7 @@ export default function RecentInvoicesTable( { tableData } : Props  ) {
                   colSpan={columns.length}
                   className='h-24 text-center'
                 >
-                  No results.
+                  No Invoice created yet.
                 </TableCell>
               </TableRow>
             )}

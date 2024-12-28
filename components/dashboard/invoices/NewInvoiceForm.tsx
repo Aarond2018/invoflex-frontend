@@ -141,7 +141,7 @@ export default function NewIvoiceForm({}: Props) {
         variant: "destructive",
         title: "Error!",
         description:
-          <p>{formattedError}</p> || "Invalid input, check form again",
+          <p>{formattedError || "Invalid input, check form again"}</p>,
       });
     }
 

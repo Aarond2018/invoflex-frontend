@@ -1,13 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { TrendingUp } from "lucide-react"
-import { Label, Pie, PieChart } from "recharts"
+import { Pie, PieChart, Label } from "recharts"
 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -18,50 +16,56 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 190, fill: "var(--color-other)" },
-]
+import { AggDataItem } from "@/types"
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig
+// Backend data
+// const backendData = [
+//   { _id: "PAID", count: 2, total: 300000 },
+//   { _id: "OVERDUE", count: 1, total: 13200 },
+//   { _id: "DRAFT", count: 1, total: 220000 },
+//   { _id: "SENT", count: 4, total: 162400 },
+// ]
 
-export function ChartComp() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-  }, [])
+// Map backend data into chart-compatible format
+// const chartData = backendData.map((item, index) => ({
+//   status: item._id,
+//   count: item.count,
+//   total: item.total,
+//   fill: `hsl(var(--chart-${index + 1}))`,
+// }))
+
+// const chartConfig = chartData.reduce((acc, curr) => {
+//   acc[curr.status] = {
+//     label: curr.status,
+//     color: curr.fill,
+//   }
+//   return acc
+// }, {} as ChartConfig)
+
+export function ChartComp({ aggData }: { aggData: AggDataItem[] }) {
+  const chartData = aggData.map((item, index) => ({
+    status: item._id,
+    count: item.count,
+    total: item.total,
+    fill: `hsl(var(--chart-${index + 1}))`,
+  }))
+
+  const chartConfig = chartData.reduce((acc, curr) => {
+    acc[curr.status] = {
+      label: curr.status,
+      color: curr.fill,
+    }
+    return acc
+  }, {} as ChartConfig)
+
+  const totalInvoices = React.useMemo(() => {
+    return chartData.reduce((acc, curr) => acc + curr.count, 0)
+  }, [chartData])
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col h-full">
       <CardHeader className="items-center pb-0">
-        <CardTitle className="text-base">Pie Chart - Donut with Text</CardTitle>
-        {/* <CardDescription>January - June 2024</CardDescription> */}
+        <CardTitle className="text-lg font-semibold">Invoice Overview</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -75,8 +79,8 @@ export function ChartComp() {
             />
             <Pie
               data={chartData}
-              dataKey="visitors"
-              nameKey="browser"
+              dataKey="count"
+              nameKey="status"
               innerRadius={60}
               strokeWidth={5}
             >
@@ -95,14 +99,14 @@ export function ChartComp() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {totalInvoices.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          {totalInvoices > 1 ? "Invoices" : "Invoice"}
                         </tspan>
                       </text>
                     )
@@ -113,14 +117,11 @@ export function ChartComp() {
           </PieChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        {/* <div className="flex items-center gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div> */}
-        {/* <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div> */}
-      </CardFooter>
+      {/* <CardFooter className="flex-col gap-2 text-sm">
+        <div className="flex items-center gap-2 font-medium leading-none">
+          {aggData.length} Invoice Categories
+        </div>
+      </CardFooter> */}
     </Card>
   )
 }

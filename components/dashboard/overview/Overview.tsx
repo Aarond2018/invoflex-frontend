@@ -3,7 +3,7 @@
 import React from "react";
 import DBMainWrap from "../DBMainWrap";
 import { useReactQuery } from "@/services/apiHelpers";
-import { Invoice, UserDashboardData } from "@/types";
+import { AggDataItem, Invoice, UserDashboardData } from "@/types";
 import { ArrowRight, Smile } from "lucide-react";
 import DBOverviewCard from "../DBOverviewCard";
 import { ChartComp } from "./Chart";
@@ -38,9 +38,9 @@ export default function Overview({}: Props) {
             Ready to streamline your invoicing today?
           </p>
         </div>
-        <div className="w-full my-4 flex gap-4">
-          <div className="flex-1">{/* pictorial representation */}
-            <ChartComp />
+        <div className="w-full my-4 flex flex-col lg:flex-row gap-4">
+          <div className="flex-1">
+            <ChartComp aggData={data?.data.data.invoicesAgg as AggDataItem[]} />
           </div>
           <div className="flex flex-1 flex-col gap-6">
             <div className="grid w-full grid-cols-2 gap-2">
@@ -59,22 +59,22 @@ export default function Overview({}: Props) {
             </div>
           </div>
         </div>
-        <div className="w-full flex my-8 gap-8">
-          <div className="w-4/6">
+        <div className="w-full flex flex-col lg:flex-row my-8 gap-4">
+          <div className="w-full lg:w-4/6">
             <div className="flex justify-between items-center my-2">
-              <h2 className="font-semibold text-lg">Recent Invoices</h2>
+              <h2 className="font-semibold text-base">Recent Invoices</h2>
               <Link href="/dashboard/invoices" className="flex items-center gap-1 text-sm">View All <ArrowRight className="w-4 h04" /></Link>
             </div>
             <RecentInvoicesTable tableData={data?.data.data.recentInvoices as Invoice[]} />
           </div>
-          <div className="w-2/6">
+          <div className="w-full lg:w-2/6">
             <div className="flex justify-between items-center my-2">
-              <h2 className="font-semibold text-lg">Recent Clients</h2>
+              <h2 className="font-semibold text-base">Recent Clients</h2>
               <Link href="/dashboard/clients" className="flex items-center gap-1 text-sm">View All <ArrowRight className="w-4 h04" /></Link>
             </div>
             <div className="flex flex-col gap-2 bg-white px-2 py-4 text-sm">
               {data?.data.data.clients && data.data.data.clients.length > 0 ? (
-                data?.data.data.clients.map((client) => (
+                data?.data.data.clients.slice(0, 4).map((client) => (
                   <div className="my-2" key={client._id}>
                     <h3 className="font-medium">{client.name}</h3>
                     <p className="text-xs">{client.email}</p>
