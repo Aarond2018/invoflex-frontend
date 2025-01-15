@@ -38,3 +38,7 @@ export const shortDate = (date: string) => {
   
   return `${month}/${day}/${year}`;
 }
+
+export const getCurrentYear = () => {
+  return new Date().getFullYear();
+}
