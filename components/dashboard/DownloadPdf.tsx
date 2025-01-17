@@ -79,10 +79,10 @@ export const DownloadPdf = ({ invoice }: Props) => (
           <View>
             {typeof invoice.addressedTo !== "string" && (
               <>
-                <Text style={styles.subtitle}>{invoice.addressedTo.name}</Text>
-                <Text style={styles.subtitle}>{invoice.addressedTo.email}</Text>
+                <Text style={styles.subtitle}>{invoice.addressedTo?.name}</Text>
+                <Text style={styles.subtitle}>{invoice.addressedTo?.email}</Text>
                 <Text style={styles.subtitle}>
-                  {invoice.addressedTo.address}
+                  {invoice.addressedTo?.address}
                 </Text>
               </>
             )}

@@ -26,6 +26,7 @@ import { useReactQuery } from "@/services/apiHelpers";
 import { Invoice } from "@/types";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { DownloadPdf } from "../DownloadPdf";
+import InvoiceAction from "./InvoiceAction";
 
 type Props = {
   id: string;
@@ -40,6 +41,8 @@ export default function InvoicePageComponent({ id }: Props) {
   if (isPending) {
     return <p>Loading....</p>;
   }
+
+  console.log(data);
 
   return (
     <DBMainWrap>
@@ -65,16 +68,19 @@ export default function InvoicePageComponent({ id }: Props) {
 
         <section className="my-8">
           <div className="mb-4 flex justify-end">
-          {isSuccess && (
-              <PDFDownloadLink
-              document={<DownloadPdf invoice={data.data.data} />}
-              fileName="invoice.pdf"
-              className={`px-4 py-2 bg-green-dark text-white font-semibold rounded text-sm`}
-            >
-              {({ loading }) =>
-                loading ? "Loading..." : "Download Invoice!"
-              }
-            </PDFDownloadLink>
+            {isSuccess && (
+              <div className="flex gap-2 py-2">
+                <PDFDownloadLink
+                  document={<DownloadPdf invoice={data.data.data} />}
+                  fileName="invoice.pdf"
+                  className={`px-4 py-2 bg-green-dark text-white font-semibold rounded text-sm`}
+                >
+                  {({ loading }) =>
+                    loading ? "Loading..." : "Download"
+                  }
+                </PDFDownloadLink>
+                <InvoiceAction id={data.data.data._id} />
+              </div>
             )}
           </div>
 
@@ -95,7 +101,7 @@ export default function InvoicePageComponent({ id }: Props) {
                 <span>{data.data.data.status}</span>
               </div>
             )}
-            
+
             <p className="my-8 flex w-full max-w-[35rem]">
               {isSuccess && data.data.data.description}
             </p>
@@ -123,9 +129,9 @@ export default function InvoicePageComponent({ id }: Props) {
                 {isSuccess &&
                   typeof data.data.data.addressedTo !== "string" && (
                     <>
-                      <span>{data.data.data.addressedTo.name}</span>
-                      <span>{data.data.data.addressedTo.email}</span>
-                      <span>{data.data.data.addressedTo.address}</span>
+                      <span>{data.data.data?.addressedTo?.name}</span>
+                      <span>{data.data.data?.addressedTo?.email}</span>
+                      <span>{data.data.data?.addressedTo?.address}</span>
                     </>
                   )}
               </div>
