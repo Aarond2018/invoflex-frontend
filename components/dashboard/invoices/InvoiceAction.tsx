@@ -29,6 +29,11 @@ export default function InvoiceAction({ id }: Props) {
     "patch"
   );
 
+  const { mutate: resendInvoice } = useReactMutation(
+    `/invoices/${id}/send`,
+    "post"
+  );
+
   const handleChangeStatus = (status: string) => {
     changeStatus(
       {
@@ -58,6 +63,32 @@ export default function InvoiceAction({ id }: Props) {
     );
   };
 
+  const handleResendInvoice = () => {
+    resendInvoice({},
+      {
+        onSuccess(data) {
+          console.log(data.data);
+          toast({
+            variant: "success",
+            title: "Success!",
+            description: `Invoice resent to client Successfully!`,
+          });
+          queryClient.invalidateQueries({ queryKey: ["get-single-invoice"] });
+        },
+        onError(error) {
+          toast({
+            variant: "destructive",
+            title: "Error!",
+            description:
+              error?.response?.data.message ||
+              error?.message ||
+              "Something went wrong!",
+          });
+        },
+      }
+    );
+  }
+
   const handleAction = (action: string) => {
     switch (action) {
       case "PREVIEW":
@@ -73,7 +104,7 @@ export default function InvoiceAction({ id }: Props) {
         console.log("Reminder!!");
         break;
       case "RESEND":
-        console.log("Resend!!");
+        handleResendInvoice()
         break;
       default:
         console.warn("Unknown action selected");

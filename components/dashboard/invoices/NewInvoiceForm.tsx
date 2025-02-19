@@ -160,7 +160,7 @@ export default function NewIvoiceForm({}: Props) {
             description: "Invoice created successfully!",
           });
           setStatusTag(undefined);
-          router.push(`/dashboard/invoices/[${data.data.data._id}]`);
+          router.push(`/dashboard/invoices/${data.data.data._id}`);
         },
         onError(error) {
           console.log("error-----", error);
