@@ -41,7 +41,6 @@ export default function InvoiceAction({ id }: Props) {
       },
       {
         onSuccess(data) {
-          console.log(data.data);
           toast({
             variant: "success",
             title: "Success!",
@@ -67,7 +66,6 @@ export default function InvoiceAction({ id }: Props) {
     resendInvoice({},
       {
         onSuccess(data) {
-          console.log(data.data);
           toast({
             variant: "success",
             title: "Success!",
@@ -92,7 +90,6 @@ export default function InvoiceAction({ id }: Props) {
   const handleAction = (action: string) => {
     switch (action) {
       case "PREVIEW":
-        console.log("Preview!!");
         break;
       case "DRAFT":
         handleChangeStatus("DRAFT");

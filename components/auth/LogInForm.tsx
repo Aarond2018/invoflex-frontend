@@ -37,8 +37,6 @@ export default function LogInForm({}: Props) {
   } = useForm<LoginInputs>({ resolver: zodResolver(LoginSchema) });
 
   const onSubmit: SubmitHandler<LoginInputs> = (data) => {
-    console.log(data);
-
     mutate(
       {
         email: data.email,
@@ -46,7 +44,6 @@ export default function LogInForm({}: Props) {
       },
       {
         onSuccess(data) {
-          console.log(data.data);
           setAuthCookie(data.data.token, data.data.data.email);
 
           if (!data.data.data.isVerified) {

@@ -44,7 +44,6 @@ export default function SignUpForm({}: Props) {
       },
       {
         onSuccess(data) {
-          console.log(data.data);
           setAuthCookie(data.data.token, data.data.data.email)
           toast({
             variant: "success",

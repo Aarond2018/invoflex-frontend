@@ -30,8 +30,6 @@ export default function DeleteInvoiceModal({ children, id }: Props) {
       {},
       {
         onSuccess(data) {
-          console.log(data);
-
           toast({
             variant: "success",
             title: "Success!",

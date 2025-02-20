@@ -9,6 +9,8 @@ import DBOverviewCard from "../DBOverviewCard";
 import { ChartComp } from "./Chart";
 import RecentInvoicesTable from "./RecentInvoicesTable";
 import Link from "next/link";
+import DBOverviewSkeleton from "@/components/skeletons/DBOverviewSkeleton";
+import ErrorComponent from "../ErrorComponent";
 
 type Props = {};
 
@@ -20,14 +22,16 @@ export default function Overview({}: Props) {
     );
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <DBOverviewSkeleton />;
   }
 
   if (isError) {
-    return <p>Something went wrong!</p>;
+    return (
+      <div className="w-full mt-12 flex justify-center">
+        <ErrorComponent queryString="get-dashboard-data" />
+      </div>
+    );
   }
-
-  console.log(isSuccess, data?.data.data);
 
   return (
     <DBMainWrap>
@@ -54,8 +58,13 @@ export default function Overview({}: Props) {
               ))}
             </div>
             <div className="w-full p-4 h-[7.5rem] bg-gradient-to-r from-[#002c29] via-[#00837b] to-[#002c29] rounded-md flex flex-col justify-center items-center text-white">
-              <h2 className="text-xl font-semibold flex items-center gap-1 text-center">Your invoicing journey starts here!<Smile className="w-5 h-5" /> </h2>
-              <Link href="/dashboard/invoices" className="font-light underline">Get Started!</Link>
+              <h2 className="text-xl font-semibold flex items-center gap-1 text-center">
+                Your invoicing journey starts here!
+                <Smile className="w-5 h-5" />{" "}
+              </h2>
+              <Link href="/dashboard/invoices" className="font-light underline">
+                Get Started!
+              </Link>
             </div>
           </div>
         </div>
@@ -63,14 +72,26 @@ export default function Overview({}: Props) {
           <div className="w-full lg:w-4/6">
             <div className="flex justify-between items-center my-2">
               <h2 className="font-semibold text-base">Recent Invoices</h2>
-              <Link href="/dashboard/invoices" className="flex items-center gap-1 text-sm">View All <ArrowRight className="w-4 h04" /></Link>
+              <Link
+                href="/dashboard/invoices"
+                className="flex items-center gap-1 text-sm"
+              >
+                View All <ArrowRight className="w-4 h04" />
+              </Link>
             </div>
-            <RecentInvoicesTable tableData={data?.data.data.recentInvoices as Invoice[]} />
+            <RecentInvoicesTable
+              tableData={data?.data.data.recentInvoices as Invoice[]}
+            />
           </div>
           <div className="w-full lg:w-2/6">
             <div className="flex justify-between items-center my-2">
               <h2 className="font-semibold text-base">Recent Clients</h2>
-              <Link href="/dashboard/clients" className="flex items-center gap-1 text-sm">View All <ArrowRight className="w-4 h04" /></Link>
+              <Link
+                href="/dashboard/clients"
+                className="flex items-center gap-1 text-sm"
+              >
+                View All <ArrowRight className="w-4 h04" />
+              </Link>
             </div>
             <div className="flex flex-col gap-2 bg-white px-2 py-4 text-sm">
               {data?.data.data.clients && data.data.data.clients.length > 0 ? (
@@ -81,7 +102,15 @@ export default function Overview({}: Props) {
                   </div>
                 ))
               ) : (
-                <p className="text-center">No Clients yet! <Link href="/dashboard/clients" className="font-semibold underline">Create One</Link> </p>
+                <p className="text-center">
+                  No Clients yet!{" "}
+                  <Link
+                    href="/dashboard/clients"
+                    className="font-semibold underline"
+                  >
+                    Create One
+                  </Link>{" "}
+                </p>
               )}
             </div>
           </div>

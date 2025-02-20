@@ -16,6 +16,8 @@ import { Invoice } from "@/types";
 import InvoicesTable from "./InvoiceTable";
 import CountUp from "react-countup";
 import Link from "next/link";
+import ErrorComponent from "../ErrorComponent";
+import DBOInvoicesPageSkeleton from "@/components/skeletons/DBInvoicesPageSkeleton";
 
 type Props = {};
 
@@ -26,11 +28,15 @@ export default function Invoices({}: Props) {
   );
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <DBOInvoicesPageSkeleton />;
   }
 
   if (isError) {
-    return <p>Something went wrong!</p>;
+    return (
+      <div className="w-full mt-12 flex justify-center">
+        <ErrorComponent queryString="get-invoices" />
+      </div>
+    );
   }
 
   const filterInvoices = (type: string) => {
@@ -38,8 +44,6 @@ export default function Invoices({}: Props) {
       .filter((item) => item.status === type)
       .reduce((acc, cur) => acc + cur.totalAmount, 0);
   };
-
-  console.log(isSuccess, data?.data.data);
 
   return (
     <DBMainWrap>

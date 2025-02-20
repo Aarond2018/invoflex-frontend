@@ -152,8 +152,6 @@ export default function NewIvoiceForm({}: Props) {
       },
       {
         onSuccess(data) {
-          console.log(data.data.data);
-
           toast({
             variant: "success",
             title: "Success!",
@@ -163,7 +161,6 @@ export default function NewIvoiceForm({}: Props) {
           router.push(`/dashboard/invoices/${data.data.data._id}`);
         },
         onError(error) {
-          console.log("error-----", error);
           toast({
             variant: "destructive",
             title: "Error!",

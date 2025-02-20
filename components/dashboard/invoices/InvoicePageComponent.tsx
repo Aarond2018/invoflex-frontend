@@ -27,22 +27,30 @@ import { Invoice } from "@/types";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { DownloadPdf } from "../DownloadPdf";
 import InvoiceAction from "./InvoiceAction";
+import InvoicePageSkeleton from "@/components/skeletons/InvoicePageSkeleton";
+import ErrorComponent from "../ErrorComponent";
 
 type Props = {
   id: string;
 };
 
 export default function InvoicePageComponent({ id }: Props) {
-  const { data, isPending, isSuccess } = useReactQuery<Invoice>(
+  const { data, isPending, isSuccess, isError } = useReactQuery<Invoice>(
     "get-single-invoice",
     `/invoices/${id}`
   );
 
   if (isPending) {
-    return <p>Loading....</p>;
+    return <InvoicePageSkeleton />
   }
 
-  console.log(data);
+  if (isError) {
+      return (
+        <div className="w-full mt-12 flex justify-center">
+          <ErrorComponent queryString="get-single-invoice" />
+        </div>
+      );
+    }
 
   return (
     <DBMainWrap>

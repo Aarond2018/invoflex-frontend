@@ -30,8 +30,6 @@ export default function DeleteClientModal({ children, id }: Props) {
       {},
       {
         onSuccess(data) {
-          console.log(data);
-
           toast({
             variant: "success",
             title: "Success!",

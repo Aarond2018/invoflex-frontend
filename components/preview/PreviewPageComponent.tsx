@@ -15,9 +15,10 @@ import { useReactQuery } from "@/services/apiHelpers";
 import { Invoice } from "@/types";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { DownloadPdf } from "../dashboard/DownloadPdf";
-import logo from "../../public/logo/full-logo-black.svg"
+import logo from "../../public/logo/full-logo-black.svg";
 import Image from "next/image";
-
+import ErrorComponent from "../dashboard/ErrorComponent";
+import InvoicePageSkeleton from "../skeletons/InvoicePageSkeleton";
 
 type Props = {
   id: string;
@@ -30,21 +31,27 @@ export default function PreviewPageComponent({ id }: Props) {
   );
 
   if (isPending) {
-    return <p>Loading....</p>;
+    return <InvoicePageSkeleton />;
   }
 
   if (isError) {
-    return <p>Something went wrong!</p>
+    return (
+      <div className="w-full mt-12 flex justify-center">
+        <ErrorComponent queryString="preview-invoice" />
+      </div>
+    );
   }
-
-  console.log(data);
 
   return (
     <section>
       <div className="w-full py-6">
         <section className="my-8">
           <div className="w-24 mb-2">
-            <Image src={logo} alt="logo-dark" className="w-full h-full object-cover" />
+            <Image
+              src={logo}
+              alt="logo-dark"
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="mb-4 flex flex-col sm:flex-row gap-4 justify-between items-center">
             {isSuccess && (
@@ -55,9 +62,7 @@ export default function PreviewPageComponent({ id }: Props) {
                   fileName="invoice.pdf"
                   className={`px-4 py-2 bg-green-dark text-white font-semibold rounded text-sm`}
                 >
-                  {({ loading }) =>
-                    loading ? "Loading..." : "Download"
-                  }
+                  {({ loading }) => (loading ? "Loading..." : "Download")}
                 </PDFDownloadLink>
               </>
             )}

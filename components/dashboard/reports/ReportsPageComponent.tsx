@@ -28,6 +28,8 @@ import { useToast } from "@/components/ui/use-toast";
 import ReportsTable from "./ReportsTable";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { DownloadReport } from "../DownloadReport";
+import ErrorComponent from "../ErrorComponent";
+import DBReportsPageSkeleton from "@/components/skeletons/DBReportsPageSkeleton";
 
 type Props = {};
 
@@ -64,11 +66,15 @@ export default function ReportsPageComponent({}: Props) {
   } = useReactMutation<Invoice[], ReportObj>("/reports", "post");
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <DBReportsPageSkeleton />;
   }
 
   if (isError) {
-    return <p>Something went wrong!</p>;
+    return (
+      <div className="w-full mt-12 flex justify-center">
+        <ErrorComponent queryString="get-clients" />
+      </div>
+    );
   }
 
   const generateReport = () => {
@@ -82,7 +88,6 @@ export default function ReportsPageComponent({}: Props) {
 
     mutate(reportObj, {
       onSuccess(data) {
-        // console.log(data.data.data);
 
         toast({
           variant: "success",
@@ -91,7 +96,6 @@ export default function ReportsPageComponent({}: Props) {
         });
       },
       onError(error) {
-        console.log("error-----", error);
         toast({
           variant: "destructive",
           title: "Error!",

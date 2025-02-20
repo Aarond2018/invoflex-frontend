@@ -19,8 +19,8 @@ type Props = {};
 export default function OnboardForm({}: Props) {
   const [phone, setPhone] = useState<string>();
 
-  const router = useRouter()
-  const { toast } = useToast()
+  const router = useRouter();
+  const { toast } = useToast();
 
   const { mutate, isPending } = useReactMutation<User, {}>(
     "/users/completeOnboarding",
@@ -37,39 +37,37 @@ export default function OnboardForm({}: Props) {
   const logo = watch("logo");
 
   const onSubmit: SubmitHandler<OnboardInputs> = (data) => {
-    console.log(data);
-
     const formData = new FormData();
-    formData.append('businessName', data.businessName);
-    formData.append('address', data.address);
-    phone && formData.append('phone', phone);
-    
-    data && data.logo &&
+    formData.append("businessName", data.businessName);
+    formData.append("address", data.address);
+    phone && formData.append("phone", phone);
+
+    data &&
+      data.logo &&
       Object.values(data.logo).map((file) => {
-        formData.append('logo', file);
+        formData.append("logo", file);
       });
 
-    mutate(formData,
-      {
-        onSuccess(data) {
-          console.log(data.data);
-          
-          toast({
-            variant: "success",
-            title: "Success!",
-            description: "User data updated successfully!",
-          })
-          router.replace("/dashboard")
-        },
-        onError(error) {
-          toast({
-            variant: "destructive",
-            title: "Error!",
-            description: error?.response?.data.message || error?.message || "Something went wrong!",
-          })
-        }
-      }
-    );
+    mutate(formData, {
+      onSuccess(data) {
+        toast({
+          variant: "success",
+          title: "Success!",
+          description: "User data updated successfully!",
+        });
+        router.replace("/dashboard");
+      },
+      onError(error) {
+        toast({
+          variant: "destructive",
+          title: "Error!",
+          description:
+            error?.response?.data.message ||
+            error?.message ||
+            "Something went wrong!",
+        });
+      },
+    });
   };
 
   return (
@@ -159,7 +157,10 @@ export default function OnboardForm({}: Props) {
             </div>
           </div>
         </div>
-        <button className="p-2 w-full bg-dark text-white font-medium my-8 rounded-md disabled:bg-gray disabled:cursor-not-allowed" disabled={isPending}>
+        <button
+          className="p-2 w-full bg-dark text-white font-medium my-8 rounded-md disabled:bg-gray disabled:cursor-not-allowed"
+          disabled={isPending}
+        >
           {!isPending ? "Save & Continue" : "Saving..."}
         </button>
       </form>
