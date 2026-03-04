@@ -10,24 +10,24 @@ import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { SignUpInputs, SignUpResponseData } from "@/types/auth";
 import { useReactMutation } from "@/services/apiHelpers";
-import { useToast } from "@/components/ui/use-toast"
-import { useRouter } from 'next/navigation'
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 import { setAuthCookie } from "@/lib/utils";
 
 type Props = {};
 
 export default function SignUpForm({}: Props) {
   const [passwordType, setPasswordType] = useState<"text" | "password">(
-    "password"
+    "password",
   );
 
-  const { mutate, isPending } = useReactMutation<SignUpResponseData, SignUpInputs>(
-    "/auth/signup",
-    "post"
-  );
+  const { mutate, isPending } = useReactMutation<
+    SignUpResponseData,
+    SignUpInputs
+  >("/auth/signup", "post");
 
-  const router = useRouter()
-  const { toast } = useToast()
+  const router = useRouter();
+  const { toast } = useToast();
 
   const {
     register,
@@ -44,22 +44,25 @@ export default function SignUpForm({}: Props) {
       },
       {
         onSuccess(data) {
-          setAuthCookie(data.data.token, data.data.data.email)
+          setAuthCookie(data.data.token, data.data.data.email);
           toast({
             variant: "success",
             title: "Success!",
             description: "Account created successfully!",
-          })
-          router.replace("/auth/verify-email")
+          });
+          router.replace("/auth/verify-email");
         },
         onError(error) {
           toast({
             variant: "destructive",
             title: "Error!",
-            description: error?.response?.data.message || error?.message || "Something went wrong!",
-          })
-        }
-      }
+            description:
+              error?.response?.data.message ||
+              error?.message ||
+              "Something went wrong!",
+          });
+        },
+      },
     );
   };
 
@@ -110,21 +113,23 @@ export default function SignUpForm({}: Props) {
         <label htmlFor="password" className="text-sm font-semibold">
           Password
         </label>
-        <div className="w-full border relative">
+        <div className="w-full border rounded-md flex gap-1 px-2 items-center">
           <input
             type={passwordType}
             id="password"
-            className="border rounded-md w-full text-sm p-2 focus:outline-none"
+            className="flex-1 border-none w-full text-sm py-2 focus:outline-none"
             {...register("password")}
           />
           {passwordType === "password" ? (
             <Eye
-              className="w-4 h-4 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
+              // className="w-4 h-4 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
+              className="w-4 h-4 cursor-pointer"
               onClick={() => setPasswordType("text")}
             />
           ) : (
             <EyeOff
-              className="w-4 h-4 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
+              // className="w-4 h-4 absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer"
+              className="w-4 h-4 cursor-pointer"
               onClick={() => setPasswordType("password")}
             />
           )}
@@ -156,8 +161,11 @@ export default function SignUpForm({}: Props) {
           </p>
         )}
       </div>
-      <button disabled={!!isPending} className="p-2 w-full bg-dark text-white font-medium my-4 rounded-md disabled:bg-gray disabled:cursor-not-allowed">
-       {!!isPending ? "Signing up" : "Sign up"}
+      <button
+        disabled={!!isPending}
+        className="p-2 w-full bg-dark text-white font-medium my-4 rounded-md disabled:bg-gray disabled:cursor-not-allowed"
+      >
+        {!!isPending ? "Signing up" : "Sign up"}
       </button>
       <p className="text-sm my-2">
         Do you have an account?{" "}
